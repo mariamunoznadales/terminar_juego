@@ -1,0 +1,68 @@
+import random
+
+#Definir la función de obtener el nivel de dificultad
+def obtener_nivel():
+    print("Selecciona un nivel de dificultad:")
+    print("1. Fácil (0 - 100)")
+    print("2. Medio (0 - 1,000)")
+    print("3. Difícil (0 - 1,000,000)")
+    print("4. Extremo (0 - 1,000,000,000,000)")
+
+    nivel = int(input("Elige el nivel (1-4): "))
+    return nivel
+
+#Definir si el usuario quiere recibir ayuda o no
+def obtener_ayuda():
+    respuesta = input("¿Quieres recibir ayuda? (Sí/No): ")
+    return respuesta == 'si'
+
+#Generar el rango de números en función del nivel que haya elegido el usuario
+def generar_numero(nivel):
+    if nivel == 1:
+        return 0, 100
+    elif nivel == 2:
+        return 0, 1000
+    elif nivel == 3:
+        return 0, 1000000
+    elif nivel == 4:
+        return 0, 1000000000000
+
+#Si el usuario solicita ayuda, reducir el rango del nivel.
+def ajustar_rango(ayuda, minimo, maximo, nivel):
+    if ayuda:
+        diferencia = (maximo - minimo) // 4
+        minimo_temporal = max(minimo + diferencia, 0)
+        maximo_temporal = min(maximo - diferencia, generar_numero(nivel)[1])
+        return minimo_temporal, maximo_temporal
+    else:
+        return minimo, maximo
+
+#Integrar las funciones dentro del juego y crear el bucle
+def jugar():
+    nivel = obtener_nivel()
+    ayuda = obtener_ayuda()
+
+    minimo, maximo = generar_numero(nivel)
+    minimo, maximo = ajustar_rango(ayuda, minimo, maximo, nivel)
+    numero_a_adivinar = random.randint(minimo, maximo)
+    intentos = 0
+
+    print(f"Has elegido el nivel {nivel}. Adivina el número entre {minimo} y {maximo}.")
+
+    while True:
+        if ayuda:
+            print(f"Ayuda: El número está entre {minimo} y {maximo}.")
+
+        intento_usuario = int(input("Introduce tu número: "))
+        intentos += 1
+
+        if intento_usuario < numero_a_adivinar:
+            print("Te quedaste corto. Intenta de nuevo.")
+        elif intento_usuario > numero_a_adivinar:
+            print("Te pasaste. Intenta de nuevo.")
+        else:
+            print(f"Felicidades, ¡adivinaste el número en {intentos} intentos!")
+            break
+
+if __name__ == "__main__":
+    jugar()
